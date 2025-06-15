@@ -7,6 +7,7 @@ from tqdm import tqdm
 import os
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from functools import partial
+from sklearn.preprocessing import StandardScaler
 #from pymer4.models import Lmer
 
 def update_elo(r_home, r_away, goal_diff, k):
@@ -59,6 +60,9 @@ def _evaluate_k(df, k, start_index=10, max_goals=6):
 
     elo_history, elo_ratings = get_elo(df, k=k)
     elo_history = elo_history[start_index:].reset_index(drop=True)
+
+    scaler = StandardScaler()
+    elo_history["EloDiff"] = scaler.fit_transform(elo_history["EloDiff"].values.reshape(-1, 1))
 
     home_model = glm("FTHG ~ EloDiff", data=elo_history,
                      family=sm.families.Poisson()).fit()
@@ -120,6 +124,10 @@ def fit_models(df,
     else:
         elo_history, elo_ratings = get_elo(df, k=k)
         elo_history = elo_history[start_index:].reset_index(drop=True)
+
+    
+    scaler = StandardScaler()
+    elo_history["EloDiff"] = scaler.fit_transform(elo_history["EloDiff"].values.reshape(-1, 1))
 
     home_glm = glm("FTHG ~ EloDiff", data=elo_history,
                    family=sm.families.Poisson()).fit()
