@@ -61,7 +61,7 @@ def _evaluate_k(df, k, start_index, max_goals, goal_target):
     Everything here runs in a separate process.
     """
     elo_history, elo_ratings = get_elo(df, k=k)
-    elo_history = elo_history[start_index:]
+    elo_history = elo_history[start_index:].reset_index(drop=True)
 
     home_model = glm("FTHG ~ EloDiff", data=elo_history,
                     family=sm.families.Poisson()).fit()
@@ -123,7 +123,7 @@ def fit_models(df, goal_target, k=None, start_index=10, max_goals=10):
         k, elo_history, elo_ratings = optimise_k(df,start_index=start_index, max_goals=max_goals, goal_target=goal_target)
     else:
         elo_history, elo_ratings = get_elo(df, k=k)
-        elo_history = elo_history[start_index:]
+        elo_history = elo_history[start_index:].reset_index(drop=True)
 
     home_model = glm("FTHG ~ EloDiff", data=elo_history,
                     family=sm.families.Poisson()).fit()

@@ -28,7 +28,7 @@ def update_elo(r_home, r_away, goal_diff, k):
 
     return r_home, r_away #, expected_home, expected_away
 
-def get_elo_history(df, k=20):
+def get_elo(df, k=20):
     teams = pd.unique(df[["HomeTeam", "AwayTeam"]].values.ravel("K"))
     
     elo_ratings = {team: 1500 for team in teams} # Init
@@ -57,9 +57,9 @@ def get_elo_history(df, k=20):
 
 def _evaluate_k(df, k, start_index=10, max_goals=6):
 
-    elo_history, elo_ratings = get_elo_history(df, k=k)
-    elo_history = elo_history[start_index:]
-    
+    elo_history, elo_ratings = get_elo(df, k=k)
+    elo_history = elo_history[start_index:].reset_index(drop=True)
+
     home_model = glm("FTHG ~ EloDiff", data=elo_history,
                      family=sm.families.Poisson()).fit()
     away_model = glm("FTAG ~ EloDiff", data=elo_history,
@@ -80,7 +80,7 @@ def _evaluate_k(df, k, start_index=10, max_goals=6):
         p_draw = np.trace(prob_matrix)
         p_away = np.triu(prob_matrix,  1).sum()
 
-        if   row["FTHG"] > row["FTAG"]:
+        if row["FTHG"] > row["FTAG"]:
             p = p_home
         elif row["FTHG"] < row["FTAG"]:
             p = p_away
@@ -118,8 +118,8 @@ def fit_models(df,
         elo_ratings = best_eloratings
         print(f"Best K: {k}  |  Log-likelihood: {best_LL:.2f}")
     else:
-        elo_history, elo_ratings = get_elo_history(df, k=k)
-        elo_history = elo_history[start_index:]
+        elo_history, elo_ratings = get_elo(df, k=k)
+        elo_history = elo_history[start_index:].reset_index(drop=True)
 
     home_glm = glm("FTHG ~ EloDiff", data=elo_history,
                    family=sm.families.Poisson()).fit()
