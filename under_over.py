@@ -64,8 +64,8 @@ def _evaluate_k(df, k, start_index, max_goals, goal_target):
     elo_history, elo_ratings = get_elo(df, k=k)
     elo_history = elo_history[start_index:].reset_index(drop=True)
 
-    scaler = StandardScaler()
-    elo_history["EloDiff"] = scaler.fit_transform(elo_history["EloDiff"].values.reshape(-1, 1))
+    #scaler = StandardScaler()
+    #elo_history["EloDiff"] = scaler.fit_transform(elo_history["EloDiff"].values.reshape(-1, 1))
 
     home_model = glm("FTHG ~ EloDiff", data=elo_history,
                     family=sm.families.Poisson()).fit()
