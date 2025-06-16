@@ -5,4 +5,4 @@ A reproducible Python toolkit that:
 3. Optimises the Elo *K* via maximum-likelihood for **1×2** or **Under/Over** markets  
 4. Generates implied probabilities, edges and fractional-Kelly stakes
 
-Also includes a notebook exploring a mixed effects model
+Also includes a notebook exploring a mixed effects model.
