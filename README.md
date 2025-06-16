@@ -1,4 +1,4 @@
-# Elo-Poisson Sports-Betting Engine
+# Elo-Poisson Sports-Betting
 A reproducible Python toolkit that:
 1. Builds Elo ratings from historical match results  
 2. Fits Poisson goal models  
